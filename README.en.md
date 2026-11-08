@@ -7,8 +7,8 @@
 </p>
 
 <p align="center">
-  <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/dsh-edge-bridge/dsh-edge-bridge?style=flat-square&color=6c5ce7"></a>
-  <a href="https://github.com/dsh-edge-bridge/dsh-edge-bridge/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/dsh-edge-bridge/dsh-edge-bridge?style=flat-square&color=eab308"></a>
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/vfuncyy/dsh-edge-bridge?style=flat-square&color=6c5ce7"></a>
+  <a href="https://github.com/vfuncyy/dsh-edge-bridge/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/vfuncyy/dsh-edge-bridge?style=flat-square&color=eab308"></a>
   <a href="plugin/package.json"><img alt="version" src="https://img.shields.io/badge/version-0.3.0-4b6fff?style=flat-square"></a>
   <a href="extension/manifest.json"><img alt="manifest v3" src="https://img.shields.io/badge/Manifest-V3-0aa06e?style=flat-square"></a>
   <a href="#testing"><img alt="tests" src="https://img.shields.io/badge/tests-318-2ea44f?style=flat-square"></a>
