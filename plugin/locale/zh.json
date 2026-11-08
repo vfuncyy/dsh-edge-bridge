@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Edge 浏览器桥接",
+    "description": "把 DeepSeek Harness 接入你的 Microsoft Edge 浏览器：按需开启后可直接读取网页、抓取信息并操作标签页，不开时零上下文开销。"
+  }
+}

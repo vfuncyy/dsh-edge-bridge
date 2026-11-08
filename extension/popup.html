@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>DSH Edge Bridge</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #ffffff;
+        --fg: #14161a;
+        --muted: #6b7280;
+        --line: #e5e7eb;
+        --field: #f8fafc;
+        --primary: #2c3cd9;
+        --primary-fg: #ffffff;
+        --ok: #1e8e3e;
+        --warn: #b26a00;
+        --bad: #c0392b;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #16181d;
+          --fg: #e8eaed;
+          --muted: #9aa0a6;
+          --line: #2b2f36;
+          --field: #1e2127;
+          --primary: #6b7cff;
+          --primary-fg: #0b0d12;
+          --ok: #5bd07a;
+          --warn: #f0b429;
+          --bad: #ff7b6b;
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        width: 372px;
+        background: var(--bg);
+        color: var(--fg);
+        font: 13px/1.45 "Segoe UI", system-ui, -apple-system, sans-serif;
+      }
+      .wrap { padding: 14px 16px 16px; }
+      header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+      .brand { display: flex; align-items: center; gap: 10px; }
+      .mark {
+        width: 30px; height: 30px; border-radius: 9px; flex: none;
+        background: linear-gradient(140deg, #4d6bfe, #2c3cd9);
+        display: grid; place-items: center;
+      }
+      .mark svg { width: 18px; height: 18px; }
+      h1 { font-size: 14px; margin: 0; letter-spacing: 0.01em; }
+      .sub { margin: 1px 0 0; font-size: 11px; color: var(--muted); }
+      .pill {
+        font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px; white-space: nowrap;
+        border: 1px solid var(--line); color: var(--muted); background: var(--field);
+      }
+      .pill.connected { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, transparent); }
+      .pill.retrying, .pill.connecting { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 45%, transparent); }
+      .pill.error, .pill.needs-token { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 45%, transparent); }
+      .hint { margin: 10px 0 0; font-size: 12px; color: var(--muted); min-height: 17px; }
+      .hint.bad { color: var(--bad); }
+      label { display: block; margin-top: 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+      label .opt { font-weight: 500; text-transform: none; letter-spacing: 0; opacity: 0.75; margin-left: 4px; }
+      input {
+        margin-top: 5px; width: 100%; padding: 7px 9px; border-radius: 8px;
+        border: 1px solid var(--line); background: var(--field); color: var(--fg);
+        font: 12px/1.3 ui-monospace, "Cascadia Code", Consolas, monospace;
+      }
+      input:focus { outline: 2px solid color-mix(in srgb, var(--primary) 55%, transparent); outline-offset: 0; }
+      .row { display: flex; gap: 8px; margin-top: 14px; }
+      button {
+        flex: 1; padding: 8px 10px; border-radius: 9px; cursor: pointer;
+        border: 1px solid var(--line); background: var(--field); color: var(--fg);
+        font: 600 12px/1 "Segoe UI", system-ui, sans-serif;
+      }
+      button:hover { border-color: color-mix(in srgb, var(--fg) 25%, transparent); }
+      button.primary { background: var(--primary); border-color: transparent; color: var(--primary-fg); }
+      button.primary:hover { filter: brightness(1.06); }
+      dl.facts {
+        margin: 14px 0 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px;
+        display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; font-size: 12px;
+      }
+      dl.facts dt { color: var(--muted); }
+      dl.facts dd { margin: 0; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      details { margin-top: 12px; }
+      summary { cursor: pointer; font-size: 12px; color: var(--muted); }
+      pre#log {
+        margin: 8px 0 0; max-height: 132px; overflow: auto; padding: 8px 10px;
+        border: 1px solid var(--line); border-radius: 8px; background: var(--field);
+        font: 11px/1.4 ui-monospace, Consolas, monospace; color: var(--muted); white-space: pre-wrap;
+      }
+      .foot { margin: 12px 0 0; font-size: 11px; color: var(--muted); }
+      code { font: 11px ui-monospace, Consolas, monospace; background: var(--field); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
+
+      .capture {
+        margin-top: 14px; padding: 11px 12px 12px; border-radius: 10px;
+        border: 1px solid var(--line); background: var(--field);
+      }
+      .capture.active { border-color: color-mix(in srgb, var(--ok) 55%, transparent); }
+      .cap-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+      .cap-title { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+      .cap-state { font-size: 11px; font-weight: 600; color: var(--muted); }
+      .capture.active .cap-state { color: var(--ok); }
+      .capture .row { margin-top: 9px; }
+      button:disabled { opacity: 0.5; cursor: default; }
+      button.wide { width: 100%; margin-top: 8px; flex: none; }
+      .cap-note { margin: 9px 0 0; font-size: 11px; color: var(--muted); }
+      .cap-note.bad { color: var(--bad); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="brand">
+          <span class="mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round">
+              <path d="M3 15c4.5 0 6-9 10.5-9S21 12 21 12" />
+              <circle cx="3" cy="15" r="1.8" fill="#fff" stroke="none" />
+              <circle cx="21" cy="12" r="1.8" fill="#fff" stroke="none" />
+            </svg>
+          </span>
+          <div>
+            <h1>DSH Edge Bridge</h1>
+            <p class="sub" id="version">v0.1.0 · protocol 1</p>
+          </div>
+        </div>
+        <span class="pill" id="status">启动中</span>
+      </header>
+
+      <p class="hint" id="hint">正在读取扩展状态…</p>
+
+      <label for="endpoint">连接地址 <span class="opt">留空 = 自动发现</span></label>
+      <input id="endpoint" spellcheck="false" placeholder="留空自动发现，或填 ws://127.0.0.1:17333/edge-bridge" />
+
+      <label for="token">配对令牌</label>
+      <input id="token" spellcheck="false" autocomplete="off" placeholder="由 DSH 的 edge_bridge 工具给出" />
+
+      <div class="row">
+        <button class="primary" id="connect">保存并连接</button>
+        <button id="disconnect">断开</button>
+      </div>
+
+      <dl class="facts">
+        <dt>服务端</dt><dd id="fact-server">—</dd>
+        <dt>标签页 / 窗口</dt><dd id="fact-tabs">—</dd>
+        <dt>已处理请求</dt><dd id="fact-rpc">0</dd>
+        <dt>连接时长</dt><dd id="fact-since">—</dd>
+      </dl>
+
+      <section class="capture" id="capture">
+        <div class="cap-head">
+          <span class="cap-title">页面抓取</span>
+          <span class="cap-state" id="cap-state">未开始</span>
+        </div>
+        <div class="row">
+          <button class="primary" id="cap-start">启动抓取页面</button>
+          <button id="cap-stop">停止抓取页面</button>
+        </div>
+        <button class="wide" id="cap-batch">批量抓取已打开的页面</button>
+        <p class="cap-note" id="cap-note">
+          页面原文与 HTML 快照录入知识库专题 <code>页面抓取</code>，每次作业在 DSH 的 <code>edge页面抓取</code> 工作区留一份总结。
+        </p>
+      </section>
+
+      <details>
+        <summary>诊断日志</summary>
+        <pre id="log">暂无事件</pre>
+      </details>
+
+      <p class="foot">
+        在 DSH 里调用 <code>edge_bridge</code>（action: status）可随时查看配对令牌。桥接只监听本机回环地址。
+      </p>
+    </div>
+    <script src="popup.js" type="module"></script>
+  </body>
+</html>

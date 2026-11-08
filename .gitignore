@@ -1,0 +1,23 @@
+# 依赖与构建产物
+node_modules/
+*.tgz
+*.zip
+
+# 截图与抓取产物（运行时生成，不入库）
+edge-artifacts/
+页面抓取/
+edge页面抓取/
+
+# 本机配置与秘密
+.env
+.env.*
+*.local.json
+edge-bridge-token
+
+# 编辑器与系统
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.log

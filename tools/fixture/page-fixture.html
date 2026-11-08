@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture Page</title>
+    <meta name="description" content="A fixture page for the DSH reader" />
+    <meta property="og:site_name" content="Fixture Site" />
+    <link rel="canonical" href="https://example.com/canonical" />
+    <style>
+      body { font: 15px/1.6 system-ui, sans-serif; margin: 0 auto; max-width: 46rem; padding: 1rem; }
+    </style>
+  </head>
+  <body>
+    <nav><a href="/nav-link">Navigation should be stripped</a></nav>
+    <header><h1>Fixture Title</h1></header>
+    <main>
+      <article>
+        <h2>Section one</h2>
+        <p>
+          Hello <strong>bold</strong> and <em>italic</em> text with a
+          <a href="/relative/link">relative link</a> and an
+          <a href="https://example.com/absolute">absolute link</a>.
+        </p>
+        <ul>
+          <li>first item</li>
+          <li>second item</li>
+        </ul>
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Qty</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Widget</td><td>3</td></tr>
+            <tr><td>Gadget</td><td>5</td></tr>
+          </tbody>
+        </table>
+        <pre><code>const answer = 42;</code></pre>
+        <blockquote>Quoted line</blockquote>
+        <img src="/img/x.png" alt="diagram" />
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFAAH/q842iQAAAABJRU5ErkJggg==" alt="icon noise" />
+        <h3>Subsection</h3>
+        <p id="filler">
+          Filler paragraph that exists only so the automatic scope heuristic finds enough text inside the article element to
+          prefer it over the whole body. It repeats a handful of ordinary words without saying anything important at all.
+        </p>
+        <p id="filler-two">
+          A second filler paragraph keeps the article comfortably above one thousand characters, so the truncation check
+          below exercises a real cut instead of passing by accident on a page that was never long enough to truncate. It
+          says nothing of substance either, which is precisely the point of filler text.
+        </p>
+        <p id="filler-three">
+          Words, words, and a few more words to push the rendered Markdown past the limits used by the assertions: section
+          headings, list items, a small table, a code fence and a blockquote all contribute a little, and this paragraph
+          contributes the rest. Nothing here should be quoted in a report, and nothing here should be dropped by the
+          reader either.
+        </p>
+        <button id="btn" type="button">Press me</button>
+        <input id="field" type="text" value="" />
+        <div id="readout">idle</div>
+        <div id="about">
+          <p>About section used to check that the structural dump can be scoped to one container.</p>
+          <button id="about-more" type="button">Read more about it</button>
+        </div>
+        <div style="display:none"><button id="ghost" type="button">Invisible ghost button</button></div>
+        <noscript><button id="noscript-btn" type="button">Invisible noscript button</button></noscript>
+      </article>
+    </main>
+    <footer><p>Footer text should be stripped</p></footer>
+    <script>
+      document.getElementById('btn').addEventListener('click', () => {
+        document.getElementById('readout').textContent = 'clicked!';
+      });
+      document.getElementById('field').addEventListener('input', (event) => {
+        document.getElementById('readout').textContent = 'typed:' + event.target.value;
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "name": "dsh-edge-bridge",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "description": "Bridge Microsoft Edge to DeepSeek Harness: read pages, scrape content, and drive tabs from DSH tools.",
+  "license": "MIT",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json",
+    "./locale/*": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "lib/**",
+    "cordis.patch.yml",
+    "locale/**",
+    "icon.svg",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

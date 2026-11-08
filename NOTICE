@@ -1,0 +1,57 @@
+dsh-edge-bridge
+Copyright (c) 2026 dsh-edge-bridge contributors
+
+This product is licensed under the MIT License (see LICENSE).
+
+--------------------------------------------------------------------------------
+Third-party components
+--------------------------------------------------------------------------------
+
+This project has NO third-party runtime dependencies.
+
+- The DeepSeek Harness host plugin (`plugin/`) uses only Node.js built-in modules
+  (`node:fs`, `node:path`, `node:url`, `node:http`, `node:crypto`). It does not
+  bundle or require any npm package at runtime.
+
+- The WebSocket server in `plugin/lib/ws.js` is an original implementation of the
+  server side of RFC 6455. No WebSocket library (`ws`, `socket.io`, `uWebSockets`)
+  is included or required.
+
+- The Edge extension (`extension/`) uses only browser platform APIs
+  (`chrome.tabs`, `chrome.scripting`, `chrome.debugger`, `chrome.storage`,
+  `chrome.alarms`, `chrome.notifications`, `chrome.runtime`). Manifest V3,
+  Chrome 116+ API surface.
+
+--------------------------------------------------------------------------------
+Development-only tooling
+--------------------------------------------------------------------------------
+
+The test suites under `tools/` run on Node.js 18+ (or on the Node runtime
+embedded in DeepSeek Harness via `ELECTRON_RUN_AS_NODE=1`). They likewise
+import only standard library modules. `tools/test-page-in-edge.mjs` launches
+Microsoft Edge in headless mode over the Chrome DevTools Protocol; Microsoft
+Edge is not redistributed here and is governed by its own license.
+
+`tools/make-icons.py` produces the extension icons. The generated PNG files in
+`extension/icons/` are original artwork created for this project.
+
+--------------------------------------------------------------------------------
+Acknowledgements
+--------------------------------------------------------------------------------
+
+The capability-negotiation handshake (`caps` in the hello frame, `HOST_CAPS` on
+the host side), the `expect`-before-acting guard, and the three-valued
+`effect_state` receipt were designed after studying Tencent/BrowserSkill
+(https://github.com/Tencent/BrowserSkill, MIT). No code was copied from that
+project; the mechanisms were re-implemented for this plugin's much smaller
+surface. Its Agent Window, session/borrow model, ref store, network capture,
+video recording, audit log and remote-server mode are deliberately not present
+here.
+
+--------------------------------------------------------------------------------
+Trademarks
+--------------------------------------------------------------------------------
+
+Microsoft Edge and Windows are trademarks of Microsoft Corporation. DeepSeek and
+DeepSeek Harness are trademarks of their respective owners. Use of these names is
+descriptive only and does not imply affiliation or endorsement.

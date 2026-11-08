@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 140" width="640" height="140" role="img" aria-label="dsh-edge-bridge">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0F1B3D"/>
+      <stop offset="0.55" stop-color="#1B2F6B"/>
+      <stop offset="1" stop-color="#2C3CD9"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7CE7FF"/>
+      <stop offset="1" stop-color="#4D6BFE"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="140" rx="18" fill="url(#bg)"/>
+  <g opacity="0.16" stroke="#7CE7FF" stroke-width="1.5" fill="none">
+    <circle cx="552" cy="70" r="52"/>
+    <circle cx="552" cy="70" r="34"/>
+    <circle cx="552" cy="70" r="16"/>
+  </g>
+  <g transform="translate(36 34)">
+    <rect width="64" height="64" rx="15" fill="url(#accent)" opacity="0.92"/>
+    <circle cx="32" cy="32" r="21" fill="none" stroke="#0F1B3D" stroke-opacity="0.35" stroke-width="2"/>
+    <path d="M20 34 L28 34 L32 22 L36 42 L40 30 L44 30" fill="none" stroke="#0F1B3D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="120" y="66" fill="#FFFFFF" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="0.5">dsh-edge-bridge</text>
+  <text x="121" y="95" fill="#9FC0FF" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="15" letter-spacing="0.3">DeepSeek Harness ⟷ your real Microsoft Edge</text>
+</svg>

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Edge Bridge",
+    "description": "Connect DeepSeek Harness to your Microsoft Edge browser. Browser tools are registered on demand, so an idle session pays no context cost."
+  }
+}

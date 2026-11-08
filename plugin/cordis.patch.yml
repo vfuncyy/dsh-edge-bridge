@@ -1,0 +1,18 @@
+# Host-only bundle: a single plugin entry, no client (Web UI) half.
+- insert:
+    - id: edge-bridge
+      name: 'dsh-edge-bridge'
+      config:
+        # The browser tools stay unregistered until edge_bridge(action="start"),
+        # so an idle session pays no context for a bridge it is not using.
+        autoStart: false
+        idleTimeoutMinutes: 30
+        stopWhenDisconnected: true
+        # Captured pages are imported into the literature knowledge base as the
+        # collection 页面抓取: self-contained HTML snapshot under
+        # 补充/原文/页面抓取/, one supNNN entry in 补充/条目.json, then indexed
+        # by kb.py. kbRoot defaults to E:/DSH工作区/论文/知识库.
+        kbCollection: '页面抓取'
+        # Only the per-job summaries live in the workspace, so the place you
+        # work in is small and readable.
+        captureTitle: 'edge页面抓取'
