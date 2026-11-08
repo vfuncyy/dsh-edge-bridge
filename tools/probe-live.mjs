@@ -1,4 +1,4 @@
-const url = process.argv[2] ?? 'ws://127.0.0.1:2556/edge-bridge';
+const url = process.argv[2] ?? 'ws://127.0.0.1:17333/edge-bridge';
 const token = process.argv[3] ?? 'deadbeef';
 await new Promise((done) => {
   let settled = false;

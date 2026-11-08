@@ -1,6 +1,7 @@
 /**
  * Knowledge-base sink: turns a captured page into an entry in the user's
- * literature knowledge base (`E:\DSH工作区\论文\知识库` by default).
+ * literature knowledge base. The root comes from `DSH_KB_ROOT`, then the
+ * `kbRoot` config, else `$DSH_HOME/knowledge-base`.
  *
  * What lands where:
  *   <KB>/补充/原文/页面抓取/<date>_<clock>-<slug>.html   self-contained snapshot
@@ -20,9 +21,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 
-const DEFAULT_KB_ROOT = 'E:/DSH工作区/论文/知识库';
+const DEFAULT_KB_ROOT =
+  process.env.DSH_KB_ROOT && process.env.DSH_KB_ROOT.trim() !== ''
+    ? process.env.DSH_KB_ROOT
+    : path.join(process.env.DSH_HOME || '.', 'knowledge-base');
 const DEFAULT_COLLECTION = '页面抓取';
-const DEFAULT_PYTHON = 'E:/.dsh/dsh-runtimes/dsh-next-primary-runtime/dependencies/python/python.exe';
+const DEFAULT_PYTHON = process.env.DSH_KB_PYTHON || 'python';
 const SYNC_DEBOUNCE_MS = 3_000;
 const MAX_ABSTRACT = 220;
 

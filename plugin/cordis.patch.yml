@@ -11,7 +11,9 @@
         # Captured pages are imported into the literature knowledge base as the
         # collection 页面抓取: self-contained HTML snapshot under
         # 补充/原文/页面抓取/, one supNNN entry in 补充/条目.json, then indexed
-        # by kb.py. kbRoot defaults to E:/DSH工作区/论文/知识库.
+        # by kb.py. Set kbRoot to the knowledge base that holds a 补充/条目.json
+        # and a kb.py (or export DSH_KB_ROOT); without one, captures keep the
+        # snapshots and skip the import.
         kbCollection: '页面抓取'
         # Only the per-job summaries live in the workspace, so the place you
         # work in is small and readable.

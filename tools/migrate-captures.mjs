@@ -12,8 +12,10 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
-const workspace = path.resolve(process.argv[2] ?? 'C:/Users/14180/Documents/deepseek-harness/edge页面抓取');
-const kbRoot = path.resolve(process.argv[3] ?? 'E:/DSH工作区/论文/知识库');
+const workspace = path.resolve(process.argv[2] ?? 'edge页面抓取');
+const kbRoot = path.resolve(
+  process.argv[3] ?? process.env.DSH_KB_ROOT ?? path.join(process.env.DSH_HOME || '.', 'knowledge-base'),
+);
 const collection = '页面抓取';
 
 const { createKbSink } = await import(pathToFileURL(path.join(here, '..', 'plugin', 'lib', 'kb.js')).href);

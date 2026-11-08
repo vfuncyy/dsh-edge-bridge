@@ -1,11 +1,11 @@
 /**
  * The dedicated loopback listener the Edge extension dials.
  *
- * It is separate from the Host's Web UI server on purpose: the GUI port can
- * change between launches (2556 → 4590 → …), which would silently break every
- * paired extension. A small fixed port keeps the address stable, and the
- * `/edge-bridge/ping` route lets the extension discover it even when the first
- * choice was taken.
+ * It is separate from the Host's Web UI server on purpose: the GUI port is
+ * reassigned between launches (it can even bind an ephemeral port), which would
+ * silently break every paired extension. A small fixed port keeps the address
+ * stable, and the `/edge-bridge/ping` route lets the extension discover it even
+ * when the first choice was taken.
  *
  * @module dsh-edge-bridge/server
  */

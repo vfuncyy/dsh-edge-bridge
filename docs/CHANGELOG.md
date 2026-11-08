@@ -2,6 +2,20 @@
 
 遵循语义化版本：`MAJOR.MINOR.PATCH`。补丁修 bug，次版本加能力但保持协议向后兼容，主版本改协议帧或移除方法。
 
+## 未发布
+
+### 变更
+
+- **知识库默认路径改为可移植**：`plugin/lib/kb.js` 的 `DEFAULT_KB_ROOT` 不再硬编码某一台机器的路径，改为先读环境变量 `DSH_KB_ROOT`，否则回落 `$DSH_HOME/knowledge-base`；`kbRoot` 配置项仍可覆盖两者。`DEFAULT_PYTHON` 改为 `DSH_KB_PYTHON` 或直接 `python`。`tools/migrate-captures.mjs` 的默认参数同步改为同样的解析顺序。
+- **`tools/probe-live.mjs`** 的默认端点从已废弃的端口改回 `ws://127.0.0.1:17333/edge-bridge`。
+
+### 文档
+
+- **全仓脱敏**：配对令牌、本机绝对路径、真实标签页 ID、个人知识库路径、本机端口演进等取值，全部替换为占位符或通用默认值（`YOUR-PAIRING-TOKEN`、`$DSH_HOME/knowledge-base` 等）。
+- README 中英双语各新增四节：开发缘由、参考与致谢、AI（DSH）参与说明、免责与侵权删除声明。
+
+> 升级提示：如果你此前依赖默认的知识库路径，请显式设置 `kbRoot` 或导出 `DSH_KB_ROOT`，否则抓取只会保存快照、跳过入库。
+
 ## 0.3.0 — 2026-11-09
 
 这一版的共同主题：**让失败可判断**。四个能力都来自对比 Tencent/BrowserSkill 之后的取舍——借它的机制，不借它的重量。
@@ -66,7 +80,7 @@
 
 - 手写 RFC6455 WebSocket 服务端（`lib/ws.js`），零第三方依赖。
 - 固定端口 17333 + 自动顺延到 17344；扩展通过 `GET /edge-bridge/ping` 自动发现。
-- 配对令牌握手：自动生成并持久化到 `E:\.dsh\edge-bridge-token`，错误令牌以 `4003` 关闭。
+- 配对令牌握手：自动生成并持久化到 `<DSH_HOME>\edge-bridge-token`，错误令牌以 `4003` 关闭。
 - 懒注册：默认只有 `edge_bridge` 控制工具，`start` 后注册浏览器工具，空闲 30 分钟 / 断线 60 秒 / DSH 退出三种自动收起。
 - 五个浏览器工具：`edge_tabs`、`edge_read`、`edge_eval`、`edge_act`、`edge_screenshot`。
 - 每个工具渲染紧凑文本报告而非 JSON 树。

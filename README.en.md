@@ -26,10 +26,14 @@ One host plugin, one MV3 extension, zero dependencies, zero daemons, loopback on
 ## Contents
 
 - [Why another browser bridge](#why-another-browser-bridge)
+- [Why this exists](#why-this-exists)
+- [Credits](#credits)
+- [How much of this was written by AI](#how-much-of-this-was-written-by-ai)
 - [What you get](#what-you-get)
 - [Install](#install)
 - [Usage](#usage)
 - [Security and limits](#security-and-limits)
+- [Disclaimer and takedown](#disclaimer-and-takedown)
 - [Troubleshooting](#troubleshooting)
 - [Testing](#testing)
 - [Repository layout](#repository-layout)
@@ -55,8 +59,43 @@ DSH model ──edge_* tools──▶ plugin (Bridge) ──ws://127.0.0.1:17333
 Three design choices explain the difference from comparable tools:
 
 - **In-process, not a sidecar.** The plugin opens its listener inside DSH itself — no background service, no bundled binary. DSH starts, it is there; DSH exits, it is gone. The trade-off is that there is no standalone CLI, because its user *is* DSH.
-- **Fixed port plus auto-discovery.** The plugin takes 17333 (walking forward within 17344 if taken) and the extension probes `GET /edge-bridge/ping` to find the real port. Your DSH web UI can move from 2556 to 4590 to 12218 without the bridge ever being reconfigured.
+- **Fixed port plus auto-discovery.** The plugin takes 17333 (walking forward within 17344 if taken) and the extension probes `GET /edge-bridge/ping` to find the real port. Your DSH web UI can change port between launches without the bridge ever being reconfigured.
 - **Designed to save the model tokens, not to look nice for humans.** Every tool renders a compact text report instead of handing the model a JSON tree to walk; `edge_inspect` dumps the whole page structure once, so the "guess a selector → fail → guess again" loop stops happening.
+
+## Why this exists
+
+This plugin was not designed from an architecture diagram. It was forced by one recurring annoyance.
+
+The pages worth reading increasingly sit **behind a login**: institutional databases, tables that only fill in after you scroll, fields that appear once you expand "more", results that render only after a filter is ticked. `web_fetch` returns a hollow shell for all of them — a login page, or a skeleton screen. The alternatives were all wrong: handing over the account felt unacceptable, and installing a full Playwright Chromium just to read one page was both heavy and useless, because that new browser has none of my sessions.
+
+What I actually needed was small: **let the Edge I am already using be operated by the model, on demand.** That is the whole bridge — no second browser, no daemon, no npm dependency. Install it and DSH gains one control tool.
+
+It later grew a second use: captured pages go straight into a literature knowledge base. "Reading a good page" and "filing that page into my library" are the same act in real work, and there should be no download folder and manual copying in between.
+
+## Credits
+
+This project starts from ground others already cleared. Explicit thanks:
+
+- **[@Tencent](https://github.com/Tencent) / [BrowserSkill](https://github.com/Tencent/BrowserSkill)** (MIT) — the reference point and main source of inspiration. It articulates the systemic risks of "an agent driving a real browser" more clearly than we did: assert before acting, tri-state the outcome of an action, negotiate capabilities between extension and host. Those three mechanisms come directly from its framing of the problem. Our `expect`, `effect_state` and `caps` negotiation are reimplemented against the questions it raised; **no code was taken**, and both implementation and protocol differ (see [NOTICE](NOTICE)).
+- **[@T-Auto](https://github.com/T-Auto) / [dsh-ops](https://github.com/T-Auto/dsh-ops)** — this repository's README layout, the bilingual document pairing, and the NOTICE attribution style follow dsh-ops' established practice.
+- **DeepSeek Harness and Cordis** — the host and DI framework the plugin runs on: the `cordis.patch.yml` bundle mechanism, `ctx.tools.register`, and `plugin_manager` hot reload all come from it.
+- And everyone who wrote down the traps of browser automation: the CRD debugging protocol, MV3 service-worker lifetime, `chrome.debugger` versus DevTools mutual exclusion, the `file://` permission model.
+
+If any attribution above is wrong or missing, please open an issue; it will be corrected immediately.
+
+## How much of this was written by AI
+
+The code and documentation in this repository were **written mostly by the coding model inside DeepSeek Harness**. The human author supplied requirements, direction, acceptance criteria, and real-environment testing. Concretely:
+
+| Stage | Who did it |
+| --- | --- |
+| Requirements, trade-offs, acceptance criteria | The human author |
+| Research into reference projects (BrowserSkill's protocol and tool surface, dsh-ops' documentation style) | DSH — read source and issues, produced the comparison |
+| Plugin and extension implementation (~4,900 lines), six test suites (318 assertions), twelve documents | Written by DSH, reviewed round by round by the human |
+| Real-browser acceptance (clicks, blocked expectations, `effect_state`, extension-reload ordering) | The human operated a real Edge and reported the symptoms; DSH localized and fixed |
+| Defect triage and repair (e.g. `fingerprint()` ignoring body text, which made `committed` report as `unknown`) | DSH located and changed the code; the human re-verified |
+
+This is stated plainly because **users deserve to know what kind of artifact they depend on**: every line here has been tested and exercised in a real browser, but it is still a project with heavy model participation, verified by few people on a narrow set of platforms. Evaluate its reliability in your environment accordingly — especially for irreversible actions (submitting a form, clicking delete, placing an order). Try those on an account or page without consequences first.
 
 ## What you get
 
@@ -123,11 +162,11 @@ plugin_manager(action="set_bundle", target="dsh-edge-bridge", enabled=true)
 
 ### 3. Pair
 
-1. `edge_bridge(action="status")` gives you a `Pairing token`, e.g. `RgUMLbk8DB-gSXIGirDcnLKTNG9Q3pRs`.
+1. `edge_bridge(action="status")` gives you a `Pairing token`, e.g. `YOUR-PAIRING-TOKEN`.
 2. Open the extension popup, paste the token into **pairing token**, leave the **endpoint** empty (empty means auto-discovery), and press **Save and connect**.
 3. The popup goes green. `edge_status` reports `caps: 11 method(s)`.
 
-The token is generated on first start and stored at `E:\.dsh\edge-bridge-token` (override with the `token` config key). Endpoint and token live in `chrome.storage.local` only and are never sent anywhere else.
+The token is generated on first start and stored at `<DSH_HOME>\edge-bridge-token` (override with the `token` config key). Endpoint and token live in `chrome.storage.local` only and are never sent anywhere else.
 
 ### 4. Try it
 
@@ -171,6 +210,24 @@ Companion documents:
 - **Cross-origin iframes are out of reach.** Content scripts and `Runtime.evaluate` act on the main frame only. `edge_inspect` reports `iframeCount`; open the iframe URL in its own tab instead.
 - **`chrome.debugger` shows a banner.** MV3 forbids `eval` inside the extension, so `edge_eval` and full-page screenshots go through CDP, and Edge displays "…is debugging this browser". It disappears on disconnect; it is not a fault.
 - **Restricted pages fail loudly.** `edge://*`, `chrome://*`, the extension store, the built-in PDF viewer and `about:blank` cannot be scripted, and the tools say so in readable language.
+
+## Disclaimer and takedown
+
+**Provided "as is".** This is a personal and team utility. The author makes no express or implied warranty of fitness, reliability, uninterrupted operation, or suitability for any particular purpose. Every consequence of using the plugin and extension — including misclicks, accidental submissions, accidental deletions, an account being flagged as automated by a third-party service, being blocked by a target site, or incorrect data being written — is borne by the user.
+
+**Driving a real browser has real consequences.** This tool operates the browser you are already logged into; its clicks take effect. The author strongly recommends verifying on an account or page without side effects before performing anything involving money, submission, deletion, publishing, or irreversible state change. `edge_act`'s `expect` pre-assertions and the tri-state `effect_state` receipt exist precisely to lower this risk — use them as documented, do not skip them.
+
+**No access-control circumvention.** This project does not provide CAPTCHA solving, anti-bot evasion, paywall bypass, or session hijacking, and will not accept those use cases as issue topics. Respect the Terms of Service and `robots.txt` of the sites you visit, and the law of your jurisdiction. Responsibility for violating those terms lies with the user.
+
+**Trademarks and affiliation.** "Microsoft", "Edge", "Chromium", "DeepSeek", "DeepSeek Harness", "Cordis" and related names and marks belong to their respective owners. This project has **no affiliation, sponsorship, or endorsement** from Microsoft Corporation, Tencent, DeepSeek, or any other organization. It is an independent third-party plugin, not an official component.
+
+**Third-party content and takedown.** This repository contains no third-party source code. If you believe any file here (code, documentation, image, example) infringes your copyright, trademark, patent, or trade secret, please open an [issue](https://github.com/vfuncyy/dsh-edge-bridge/issues) or contact the maintainer via the repository owner page, stating **the exact file path, the basis of your right, and the remedy you want**. The commitments:
+
+1. Respond within **72 hours** of a valid notice, and remove or take down the named content first, without waiting for the dispute to resolve;
+2. Restore it if the notice turns out to be mistaken, once rights are clarified;
+3. Take no retaliatory action beyond "remove first, discuss after", and hold no grudge against good-faith complainants.
+
+**On personal information in this repository.** Before publication, developer-machine residue was scrubbed: pairing tokens, absolute local paths, real tab IDs, personal knowledge-base paths and local port history were replaced with placeholders or generic defaults (for example the token became `YOUR-PAIRING-TOKEN`, and the knowledge-base root became `$DSH_HOME/knowledge-base`). The `vfuncyy` that remains appears only as the repository owner and in badge links. If you still find personal or machine-specific information, open an issue naming the path; it will be handled immediately.
 
 ## Troubleshooting
 

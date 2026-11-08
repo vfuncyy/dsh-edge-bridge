@@ -43,7 +43,7 @@ ext:    parallel GET http://127.0.0.1:<port>/edge-bridge/ping (12 ports, 700ms)
         build ws://127.0.0.1:<port>/edge-bridge and dial
 ```
 
-Why not a fixed port with configuration: the DSH web UI port moves (2556 → 4590 → 12218). If the bridge port moved with it, you would reconfigure the extension every time. Now **the plugin finds a free slot and the extension finds the plugin**, with no configuration on either side.
+Why not a fixed port with configuration: the DSH web UI port changes between launches. If the bridge port moved with it, you would reconfigure the extension every time. Now **the plugin finds a free slot and the extension finds the plugin**, with no configuration on either side.
 
 Why not mDNS or broadcast: unreliable on Windows, and twelve loopback HTTP probes cost a few milliseconds in total.
 

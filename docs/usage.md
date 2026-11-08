@@ -68,8 +68,8 @@ Connection edge-1
   caps:      11 method(s)
 
 Pairing
-  token: RgUMLbk8DB-gSXIGirDcnLKTNG9Q3pRs
-  token file: E:\.dsh\edge-bridge-token
+  token: YOUR-PAIRING-TOKEN
+  token file: <DSH_HOME>\edge-bridge-token
 ```
 
 The `caps:` line is the diagnostic v0.3.0 added:
@@ -112,8 +112,8 @@ Receipt:
 Microsoft Edge — 3 tab(s) in 2 window(s)
 
 Window 1288291366 (focused)
-  tab 2039574010 [active] — Fixture Page
-      file:///C:/Users/14180/Documents/.../page-fixture.html
+  tab 42 [active] — Fixture Page
+      file:///C:/work/edge-bridge/tools/fixture/page-fixture.html
   tab 2039573698 [pinned, loading] — GitHub · Where software is built
       https://github.com/
 
@@ -145,7 +145,7 @@ These phrases are actionable:
 Receipt:
 
 ```
-Microsoft Edge tab 2039574010 — "Fixture Page"
+Microsoft Edge tab 42 — "Fixture Page"
 URL: file:///C:/.../page-fixture.html
 markdown · 1284 chars
 
@@ -273,11 +273,11 @@ Selectors still work, for two cases: a page that has not changed in years (`#sea
 
 ```
 edge_act(action="click", ref="e4")
-→ Microsoft Edge tab 2039574010 — clicked ref e4
+→ Microsoft Edge tab 42 — clicked ref e4
   effect_state: committed — the page changed immediately
 
 edge_act(action="type", ref="e5", text="hello world")
-→ Microsoft Edge tab 2039574010 — typed "hello world" into ref e5
+→ Microsoft Edge tab 42 — typed "hello world" into ref e5
   effect_state: committed — the field value changed
 
 edge_act(action="select", selector="#city", text="Hangzhou")
@@ -417,8 +417,8 @@ All three shapes work: an expression (`document.title`), a function body (contai
 Receipt:
 
 ```
-Saved PNG screenshot of Edge tab 2039574010 (1280×1284, 184 KB) to:
-C:\Users\14180\Documents\deepseek-harness\default-workspace\edge-artifacts\edge-2039574010-2026-11-09T03-12-44.png
+Saved PNG screenshot of Edge tab 42 (1280×1284, 184 KB) to:
+<workspace>\edge-artifacts\edge-<tab>-<timestamp>.png
 
 Call read_image with that path to inspect the image.
 ```
@@ -439,7 +439,7 @@ This is not one of the `edge_*` tools; it is the three popup buttons:
 
 **Only the host plugin has filesystem access**; the extension sends intent. So this needs DSH running, the plugin enabled and pairing complete.
 
-Each capture writes three places (`<KB>` defaults to `E:/DSH工作区/论文/知识库`):
+Each capture writes three places (`<KB>` is the resolved knowledge-base root):
 
 | Location | Content |
 | --- | --- |
@@ -487,13 +487,13 @@ Nine keys, set in `cordis.patch.yml` or the profile's plugin config:
 | Key | Default | Notes |
 | --- | --- | --- |
 | `port` | `17333` | listener port; walks forward within 17344 when taken |
-| `token` | auto-generated | pairing token; defaults to `E:\.dsh\edge-bridge-token` |
+| `token` | auto-generated | pairing token; defaults to `<DSH_HOME>\edge-bridge-token` |
 | `autoStart` | `false` | register the seven tools at load (i.e. pay the context cost every session) |
 | `idleTimeoutMinutes` | `30` | idle minutes before auto-stop; `0` disables |
 | `stopWhenDisconnected` | `true` | auto-stop 60 seconds after the extension drops |
 | `captureTitle` | `edge页面抓取` | workspace name for capture summaries |
 | `captureDir` | automatic | where capture artefacts go |
-| `kbRoot` | `E:/DSH工作区/论文/知识库` | knowledge base root |
+| `kbRoot` | `$DSH_HOME/knowledge-base` | knowledge base root (or set `DSH_KB_ROOT`) |
 | `kbCollection` | `页面抓取` | knowledge base collection name |
 | `kbPython` | DSH bundled python | interpreter used to run `kb.py` |
 

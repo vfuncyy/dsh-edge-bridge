@@ -13,7 +13,7 @@ Plugin configuration lives in the bundle's `cordis.patch.yml`, or is overridden 
 | `stopWhenDisconnected` | boolean | `true` | stand down when the extension drops |
 | `captureTitle` | string | `edge页面抓取` | capture session workspace name |
 | `captureDir` | string | automatic | capture artefact directory |
-| `kbRoot` | string | `E:/DSH工作区/论文/知识库` | knowledge base root |
+| `kbRoot` | string | `$DSH_HOME/knowledge-base` | knowledge base root |
 | `kbCollection` | string | `页面抓取` | knowledge base collection |
 | `kbPython` | string | DSH bundled python | interpreter for `kb.py` |
 
@@ -39,13 +39,13 @@ port: 17400
 
 The pairing token the extension must present.
 
-- When unset, a 32-character URL-safe random string is generated on first start and written to `E:\.dsh\edge-bridge-token` (mode `0600`).
+- When unset, a 32-character URL-safe random string is generated on first start and written to `<DSH_HOME>\edge-bridge-token` (mode `0600`).
 - An existing token file is read rather than regenerated, so restarting DSH does not disconnect the extension.
 - An explicit `token` wins, and is still written to the file so `edge_status` can show it.
 - Changing it means re-pasting in the popup.
 
 ```yaml
-token: "RgUMLbk8DB-gSXIGirDcnLKTNG9Q3pRs"
+token: "YOUR-PAIRING-TOKEN"
 ```
 
 Do not commit it; `.gitignore` already excludes `edge-bridge-token` and `*.local.json`.
@@ -94,7 +94,7 @@ Use an absolute path when overriding; relative paths resolve against the workspa
 
 ## `kbRoot`
 
-Knowledge base root, default `E:/DSH工作区/论文/知识库`.
+Knowledge base root. Defaults to `DSH_KB_ROOT` when set, else `$DSH_HOME/knowledge-base`; the `kbRoot` config key overrides both.
 
 Three writes happen here:
 
@@ -128,7 +128,7 @@ kbCollection: 法规原文
 The interpreter used to run `kb.py`. Defaults to the DSH bundled runtime:
 
 ```
-E:/.dsh/dsh-runtimes/dsh-next-primary-runtime/dependencies/python/python.exe
+python
 ```
 
 Invocations are `spawn(kbPython, ['-X', 'utf8', 'kb.py', ...])` with `cwd` set to `kbRoot` and `PYTHONIOENCODING=utf-8` in the environment, which keeps Chinese paths and console encoding from corrupting output.
@@ -149,7 +149,7 @@ If `kb.py` is not under `kbRoot`, capture fails and prints the first lines of st
         stopWhenDisconnected: true
         captureTitle: edge页面抓取
         kbCollection: 页面抓取
-        kbRoot: E:/DSH工作区/论文/知识库
+        kbRoot: D:/knowledge-base
 ```
 
 ## Compatibility

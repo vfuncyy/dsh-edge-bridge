@@ -184,7 +184,7 @@ Capture runs in the **host plugin** (only it has filesystem access). Check:
 
 Check the mtime of `<kbRoot>/补充/条目.json`. If it did not change:
 
-- `kbRoot` is wrong (default `E:/DSH工作区/论文/知识库`; a non-existent path fails).
+- `kbRoot` is wrong (default `DSH_KB_ROOT`, else `$DSH_HOME/knowledge-base`; a non-existent path fails).
 - `kb.py` is not under `kbRoot`, or `kbPython` points at a missing interpreter.
 - The session summary records the failure reason and the first lines of stderr.
 
